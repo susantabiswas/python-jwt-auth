@@ -8,18 +8,7 @@ import configparser
 server = Flask(__name__)
 auth_db = MySQL(server)
 
-CONFIG_FILENAME = "./python-jwt-template/config.ini"
-CONFIG_HEADER = "JwtApp"
-config = configparser.ConfigParser()
-config.read(CONFIG_FILENAME)
-
-server.config["FLASK_ENV "] = config.get()
-# Mysql settings
-server.config["MYSQL_HOST"] = config.get(CONFIG_HEADER, "MYSQL_HOST")
-server.config["MYSQL_USER"] = config.get(CONFIG_HEADER,"MYSQL_USER")
-server.config["MYSQL_PASSWORD"] = config.get(CONFIG_HEADER,"MYSQL_PASSWORD")
-server.config["MYSQL_DB"] = config.get(CONFIG_HEADER,"MYSQL_DB")
-server.config["MYSQL_PORT"] = int(config.get(CONFIG_HEADER,"MYSQL_PORT"))
+server.config.from_object("config.DevConfig")
 
 @server.route("/register", methods=["POST"])
 def register():
