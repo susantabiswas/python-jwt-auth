@@ -6,14 +6,14 @@ from flask_mysqldb  import MySQL
 import configparser
 
 server = Flask(__name__)
-auth_users_db = MySQL(server)
-blocked_tokens_db = MySQL(server)
+auth_db = MySQL(server)
 
 CONFIG_FILENAME = "./python-jwt-template/config.ini"
 CONFIG_HEADER = "JwtApp"
 config = configparser.ConfigParser()
 config.read(CONFIG_FILENAME)
 
+server.config["FLASK_ENV "] = config.get()
 # Mysql settings
 server.config["MYSQL_HOST"] = config.get(CONFIG_HEADER, "MYSQL_HOST")
 server.config["MYSQL_USER"] = config.get(CONFIG_HEADER,"MYSQL_USER")
@@ -33,7 +33,7 @@ def login():
         return "Credential details missing", 401
 
     # check whether the user is registered or not
-    cursor = auth_users_db.connection.cursor()
+    cursor = auth_db.connection.cursor()
 
     query = """SELECT email, password FROM users WHERE email='{}'""".format(auth_header.username)
     result = cursor.execute(query)
