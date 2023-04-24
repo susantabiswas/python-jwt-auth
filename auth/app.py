@@ -4,11 +4,10 @@ from dotenv import load_dotenv
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from auth.config import export_environment_variables
 
-APP_ENV_FILE = ".env"
 # Load the environment vars from the local env file
-BASE_DIR = path.abspath(path.dirname(__file__))
-load_dotenv(path.join(BASE_DIR, APP_ENV_FILE))
+export_environment_variables() 
 
 
 # Create the Flask server and load the configs from the configuration

@@ -1,10 +1,18 @@
 from dotenv import load_dotenv
 from os import environ, path
 
-APP_ENV_FILE = ".env"
+def export_environment_variables(env_filename=".env") -> None:
+    """Exports the environment variables from the .env file.
+
+    Args:
+        env_file_name (str, optional): local environment file containing the variables. Defaults to ".env".
+    """
+    # Load the environment vars from the local env file
+    BASE_DIR = path.abspath(path.dirname(__file__))
+    load_dotenv(path.join(BASE_DIR, env_filename))
+    
 # Load the environment vars from the local env file
-BASE_DIR = path.abspath(path.dirname(__file__))
-load_dotenv(path.join(BASE_DIR, APP_ENV_FILE))
+export_environment_variables()
 
 class BaseConfig:
     # Flask config
@@ -35,3 +43,4 @@ class ProdConfig(BaseConfig):
     # MySQL
     MYSQL_HOST = ""
     MYSQL_PORT = 3306
+
