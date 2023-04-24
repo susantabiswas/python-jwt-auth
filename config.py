@@ -11,12 +11,13 @@ class BaseConfig:
     SECRET_KEY = environ.get('SECRET_KEY')
     DEBUG = False
     TESTING = False
+    HOST="0.0.0.0"
+    FLASK_PORT=5000
+        
+    # Database config
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # MySql config
-    MYSQL_USER = environ.get("DB_USER")
-    MYSQL_PASSWORD = environ.get("DB_PWD")
-    MYSQL_DB = environ.get("DB_NAME")
 
 class DevConfig(BaseConfig):
     FLASK_ENV = "development"
