@@ -15,14 +15,14 @@ load_dotenv(path.join(BASE_DIR, APP_ENV_FILE))
 app = Flask(__name__)
 app.config.from_object(environ.get("APP_ENVIRONMENT"))
 
-print(environ.get("APP_ENVIRONMENT"))
 # Setup the objects for handling database migration.
 # If there is any schema change, this will apply the changes to
 # the database
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from models import User, TokenBlocklist
+from models.user import User
+from models.token_blocklist import TokenBlocklist
 
 if __name__ == "__main__":
     app.run(
