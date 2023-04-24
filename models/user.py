@@ -18,14 +18,3 @@ class User(db.Model):
 
     def __repr__(self):
         return "<Id:{}, Name: {}>".format(id, self.name)
-
-
-class TokenBlocklist(db.Model):
-    """Represents the schema to save the blocked token related information.
-    """
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    token = db.Column(db.String(500), unique=True, nullable=False)
-    blocked_on = db.Column(db.DateTime, nullable=False)
-
-    def __repr__(self):
-        return '<id: {}, token: {}>'.format(id, self.token)
