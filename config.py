@@ -11,7 +11,7 @@ class BaseConfig:
     SECRET_KEY = environ.get('SECRET_KEY')
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = environ('DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI')
 
     # MySql config
     MYSQL_USER = environ.get("DB_USER")
