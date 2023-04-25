@@ -65,17 +65,14 @@ class LogoutAPI(MethodView):
 
 class UserAPI(MethodView):
     def get(self):
-        # verify if the user is authorized
-        # Authorization: Bearer <JWT token>
-        auth_header = request.headers.get('Authorization')
-
-        jwt_token = auth_header.split(' ')[1] if auth_header else None
-
-        if jwt_token is None:
-            return make_response(jsonify(create_response('failed', 'Authorization header missing'))), 401
-        
         try:
-            user_id = decode_jwt_token(jwt_token=jwt_token)
+            # verify if the user is authorized by checking the JWT auth token
+            is_valid, user_id, err_message, status_code = is_valid_jwt(request.headers)
+
+            # invalid JWT token
+            if not is_valid:
+                response = create_response('failed', err_message)
+                return make_response(jsonify(response)), status_code
 
             # JWT decoding was successful, fetch user details
             user = User.query.filter_by(id=user_id).first()
@@ -87,16 +84,6 @@ class UserAPI(MethodView):
                 'registration_on': user.registration_timestamp
             }
             return make_response(jsonify(response)), 200
-        
-        except jwt.InvalidSignatureError as e:
-            response = create_response('failed', "Token Signature doesn't match.")
-            return make_response(jsonify(response)), 401
-        except jwt.ExpiredSignatureError as e:
-            response = create_response('failed', "Signature is expired. Please log in again to refresh")
-            return make_response(jsonify(response)), 401
-        except jwt.InvalidTokenError as e:
-            response = create_response('failed', "Invalid token signature")
-            return make_response(jsonify(response)), 401
         except Exception:
             return make_response(jsonify(create_response('failed', 'Internal Error'))), 500
 

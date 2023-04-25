@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import jwt
 from auth.app import app
+from flask import request
 
 def encode_jwt_token(user_id: str)->str:
     """Creates a JWT auth token. Uses a symmetric algorithm for
@@ -66,3 +67,35 @@ def create_response(status: str, message: str)->dict:
         'status': status,
         'message': message
     }
+
+def is_valid_jwt(req_header):
+    """Checks whether the header has a valid JWT token or not.
+
+    Args:
+        req_header (HTTP headers): HTTP headers derived from the HTTP call
+
+    Returns:
+        is_valid (bool): Whether the JWT token is valid
+        jwt_payload_output (str): Output from payload
+        err_message (str): In case of exception, saves the exception message
+            otherwise None
+        status_code(int) : Status code
+    """
+    # Authorization: Bearer <JWT token>
+    auth_header = request.headers.get('Authorization')
+
+    jwt_token = auth_header.split(' ')[1] if auth_header else None
+
+    if jwt_token is None:
+        return False, "Authorization header missing", 401
+    
+    try:
+        user_id = decode_jwt_token(jwt_token=jwt_token)
+        return True, user_id, None, 200
+    
+    except jwt.InvalidSignatureError as e:
+        return False, None, "Token Signature doesn't match", 401
+    except jwt.ExpiredSignatureError as e:
+        return False, None, "Signature is expired. Please log in again to refresh", 401
+    except jwt.InvalidTokenError as e:
+        return False, None, "Invalid token signature", 401
