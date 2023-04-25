@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, make_response, request
 from flask.views import MethodView
-import jwt
 from auth.app import db
 from auth.models.token_blocklist import TokenBlocklist
 from auth.models.user import User
@@ -58,7 +57,42 @@ class SignupAPI(MethodView):
 
 
 class LoginAPI(MethodView):
-    pass
+    def post(self):
+        try:
+            data = request.get_json()
+            email = data['email']
+            password = data['password']
+
+            # Fetch user details
+            user = User.query.filter_by(email=email).first()
+
+            # User doesn't exist
+            if not user:
+                return make_response(
+                    jsonify(create_response('failed', 'User not found'))), 404
+          
+            pwd_match = bcrypt.checkpw(
+                password=password.encode('utf-8'),
+                hashed_password=user.password.encode('utf-8'))
+            
+            # password is not correct
+            if not pwd_match:
+                response = create_response('failed', 'Incorrect Password')
+                return make_response(jsonify(response)), 401
+
+            # User password is correct, generate a new JWT auth token
+            response = create_response(status='success',
+                message='User login successful.')
+            response['jwt_token'] = encode_jwt_token(user.id)
+
+            return make_response(jsonify(response)), 200
+
+        except KeyError:
+            response = create_response('failed', 'Email / Password missing')
+            return make_response(jsonify(response)), 401
+        except Exception as e:
+            response = create_response('failed', 'Internal Error')
+            return make_response(jsonify(response)), 500
 
 class LogoutAPI(MethodView):
     pass
@@ -76,6 +110,11 @@ class UserAPI(MethodView):
 
             # JWT decoding was successful, fetch user details
             user = User.query.filter_by(id=user_id).first()
+
+            # User doesn't exist
+            if not user:
+                return make_response(jsonify(create_response('failed', 'User not found'))), 404
+
             response = create_response('success', '')
             response['details'] = {
                 'email': user.email,
