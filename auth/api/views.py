@@ -4,6 +4,8 @@ from flask.views import MethodView
 from auth.app import db
 from auth.models.token_blocklist import TokenBlocklist
 from auth.models.user import User
+from auth.api.auth_utils import *
+import bcrypt
 
 auth_blueprint = Blueprint("auth", __name__)
 
@@ -18,39 +20,39 @@ class SignupAPI(MethodView):
             email = data['email']
             password = data['password']
             name = data['name']
-        except Exception as e:
-            response = {
-                'status' : 'failed',
-                'message': 'Required fields are missing.'
-            }
+        except Exception:
+            response = create_response(status='failed',
+                    message='Required fields are missing.')
             return make_response(jsonify(response)), 400
 
         # Check if the user already exists
         user = User.query.filter_by(email=email).first()
 
+        # User already exists
         if user:
-            response = {
-                'status': 'failed',
-                'message': 'User already exists.'
-            }
+            response = create_response(status='failed',
+                    message='User already exists.')
             return make_response(jsonify(response)), 202
         else:
             try:
-                user = User(email=email, password=password, name=name)
+                # hash the password and then save it. This ensures that in the event
+                # the data is exposed, the actual passwords won't be exposed
+                pwd_salt = bcrypt.gensalt(app.config['BCRYPT_ROUNDS'])
+                pwd_hash = bcrypt.hashpw(password, pwd_salt)
+                
+                # Insert the User record in database
+                user = User(email=email, password=pwd_hash, name=name)
                 db.session.add(user)
                 db.session.commit()
 
-                # generate the JWT token
-                response = {
-                    'status': 'success',
-                    'message': 'User signed up successful.'
-                }
+                # generate the JWT token and send it with the response
+                response = create_response(status='success',
+                    message='User signed up successful.')
+                response['jwt_token'] = encode_jwt_token(user.id)
+
                 return make_response(jsonify(response)), 201
             except:
-                response = {
-                    'status': 'failed',
-                    'message': 'Internal error'
-                }
+                response = create_response('failed', 'Internal Error')
                 return make_response(jsonify(response)), 500
 
 

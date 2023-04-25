@@ -21,6 +21,7 @@ class BaseConfig:
     TESTING = False
     HOST="0.0.0.0"
     FLASK_PORT=5000
+    BCRYPT_ROUNDS=4
         
     # Database config
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI')

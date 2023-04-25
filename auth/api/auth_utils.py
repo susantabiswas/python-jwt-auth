@@ -56,3 +56,19 @@ def decode_jwt_token(jwt_token: str)->str:
         return "Signature is expired. Please log in again to refresh"
     except Exception as e:
         raise e 
+
+
+def create_response(status: str, message: str)->dict:
+    """Creates the standard response body
+
+    Args:
+        status (str): Status of operation
+        message (str): Message for response
+
+    Returns:
+        dict: Dict representing the fields as key
+    """
+    return {
+        'status': status,
+        'message': message
+    }

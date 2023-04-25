@@ -34,5 +34,6 @@ app.register_blueprint(auth_blueprint)
 
 if __name__ == "__main__":
     app.run(
+        debug=app.config['DEBUG'],
         host=app.config['HOST'],
         port=app.config['FLASK_PORT'])
