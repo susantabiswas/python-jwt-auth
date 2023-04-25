@@ -120,6 +120,6 @@ def is_valid_jwt(jwt_token):
         return False, None, "Invalid token signature", 401
 
 def is_jwt_blocked(jwt_token: str)->bool:
-    blocked_token = BlockedToken.query.filter_by(token=jwt_token)
+    blocked_token = BlockedToken.query.filter_by(token=jwt_token).first()
     return blocked_token is not None
     

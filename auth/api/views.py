@@ -95,7 +95,7 @@ class LoginAPI(MethodView):
             return make_response(jsonify(response)), 500
 
 class LogoutAPI(MethodView):
-    def post():
+    def post(self):
         try:
             # verify if the user is authorized by checking the JWT auth token
             jwt_token = extract_jwt_token(request.headers)
