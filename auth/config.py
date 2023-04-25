@@ -21,8 +21,9 @@ class BaseConfig:
     TESTING = False
     HOST = "0.0.0.0"
     FLASK_PORT = 5000
-    BCRYPT_ROUNDS = 4
+    BCRYPT_ROUNDS = 10
     PROPAGATE_EXCEPTIONS = False
+
     # Database config
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -33,16 +34,15 @@ class DevConfig(BaseConfig):
     DEBUG = True
     TESTING = True
     PROPAGATE_EXCEPTIONS = True
-    
-    # MySQL
-    MYSQL_HOST = "localhost"
-    MYSQL_PORT = 3306
+
+class TestConfig(BaseConfig):
+    ENV = "testing"
+    DEBUG = True
+    TESTING = True
+    PROPAGATE_EXCEPTIONS = True
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
 
 class ProdConfig(BaseConfig):
     FLASK_ENV = "production"
     DEBUG = False
-
-    # MySQL
-    MYSQL_HOST = ""
-    MYSQL_PORT = 3306
 
