@@ -27,7 +27,7 @@ class SignupAPI(MethodView):
 
         # Check if the user already exists
         user = User.query.filter_by(email=email).first()
-
+        
         # User already exists
         if user:
             response = create_response(status='failed',
@@ -38,8 +38,9 @@ class SignupAPI(MethodView):
                 # hash the password and then save it. This ensures that in the event
                 # the data is exposed, the actual passwords won't be exposed
                 pwd_salt = bcrypt.gensalt(app.config['BCRYPT_ROUNDS'])
-                pwd_hash = bcrypt.hashpw(password, pwd_salt)
-                
+                # the password needs to be converted to byte-array to get the hash
+                pwd_hash = bcrypt.hashpw(password.encode('utf-8'), pwd_salt)
+
                 # Insert the User record in database
                 user = User(email=email, password=pwd_hash, name=name)
                 db.session.add(user)
@@ -51,7 +52,7 @@ class SignupAPI(MethodView):
                 response['jwt_token'] = encode_jwt_token(user.id)
 
                 return make_response(jsonify(response)), 201
-            except:
+            except Exception:
                 response = create_response('failed', 'Internal Error')
                 return make_response(jsonify(response)), 500
 
