@@ -42,7 +42,10 @@ class TestConfig(BaseConfig):
     PROPAGATE_EXCEPTIONS = True
     PRESERVE_CONTEXT_ON_EXCEPTION = False
 
+    # Database
+    SQLALCHEMY_DATABASE_URI = environ.get('TEST_DATABASE_URI')
+
 class ProdConfig(BaseConfig):
-    FLASK_ENV = "production"
+    ENV = "production"
     DEBUG = False
 
