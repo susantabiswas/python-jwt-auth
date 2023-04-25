@@ -9,7 +9,7 @@ class User(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), nullable=False, unique=True)
-    password = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     registration_timestamp = db.Column(db.DateTime(timezone=False), nullable=False,
         default=datetime.utcnow())
