@@ -1,5 +1,5 @@
 from auth.app import db
-from auth.models.token_blocklist import BlockedToken
+from auth.models.blocked_token import BlockedToken
 from auth.models.user import User
 from tests.base import TestCaseBase
 

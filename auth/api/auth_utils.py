@@ -3,7 +3,7 @@ import jwt
 from auth.app import app
 from flask import request
 from auth.app import db
-from auth.models.token_blocklist import BlockedToken 
+from auth.models.blocked_token import BlockedToken 
 
 def encode_jwt_token(user_id: str)->str:
     """Creates a JWT auth token. Uses a symmetric algorithm for

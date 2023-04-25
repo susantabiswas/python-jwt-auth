@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, make_response, request
 from flask.views import MethodView
 from auth.app import db
-from auth.models.token_blocklist import BlockedToken
+from auth.models.blocked_token import BlockedToken
 from auth.models.user import User
 from auth.api.auth_utils import *
 import bcrypt

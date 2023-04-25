@@ -25,7 +25,7 @@ CORS(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from auth.models.token_blocklist import BlockedToken
+from auth.models.blocked_token import BlockedToken
 from auth.models.user import User
 
 
