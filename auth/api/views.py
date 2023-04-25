@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, make_response, request
 from flask.views import MethodView
-
+import jwt
 from auth.app import db
 from auth.models.token_blocklist import TokenBlocklist
 from auth.models.user import User
@@ -27,7 +27,7 @@ class SignupAPI(MethodView):
 
         # Check if the user already exists
         user = User.query.filter_by(email=email).first()
-        
+
         # User already exists
         if user:
             response = create_response(status='failed',
@@ -52,7 +52,7 @@ class SignupAPI(MethodView):
                 response['jwt_token'] = encode_jwt_token(user.id)
 
                 return make_response(jsonify(response)), 201
-            except Exception:
+            except Exception as e:
                 response = create_response('failed', 'Internal Error')
                 return make_response(jsonify(response)), 500
 
@@ -64,7 +64,41 @@ class LogoutAPI(MethodView):
     pass
 
 class UserAPI(MethodView):
-    pass
+    def get(self):
+        # verify if the user is authorized
+        # Authorization: Bearer <JWT token>
+        auth_header = request.headers.get('Authorization')
+
+        jwt_token = auth_header.split(' ')[1] if auth_header else None
+
+        if jwt_token is None:
+            return make_response(jsonify(create_response('failed', 'Authorization header missing'))), 401
+        
+        try:
+            user_id = decode_jwt_token(jwt_token=jwt_token)
+
+            # JWT decoding was successful, fetch user details
+            user = User.query.filter_by(id=user_id).first()
+            response = create_response('success', '')
+            response['details'] = {
+                'email': user.email,
+                'name': user.name,
+                'admin': user.admin,
+                'registration_on': user.registration_timestamp
+            }
+            return make_response(jsonify(response)), 200
+        
+        except jwt.InvalidSignatureError as e:
+            response = create_response('failed', "Token Signature doesn't match.")
+            return make_response(jsonify(response)), 401
+        except jwt.ExpiredSignatureError as e:
+            response = create_response('failed', "Signature is expired. Please log in again to refresh")
+            return make_response(jsonify(response)), 401
+        except jwt.InvalidTokenError as e:
+            response = create_response('failed', "Invalid token signature")
+            return make_response(jsonify(response)), 401
+        except Exception:
+            return make_response(jsonify(create_response('failed', 'Internal Error'))), 500
 
 
 # define the views for the APIs

@@ -21,7 +21,7 @@ def encode_jwt_token(user_id: str)->str:
         payload = {
             'sub': user_id,
             'iat': curr_time,
-            'exp': curr_time +  timedelta(days=0, minutes=1, seconds=0)
+            'exp': curr_time +  timedelta(days=0, minutes=10, seconds=0)
         }
         return jwt.encode(
             payload,
@@ -45,17 +45,11 @@ def decode_jwt_token(jwt_token: str)->str:
     Returns:
         str: Unique user id
     """
-    try:
-        payload = jwt.decode(
-            jwt_token,
-            app.config['SECRET_KEY'])
-        return payload['sub']
-    except jwt.InvalidTokenError:
-        return "Token Signature is invalid."
-    except jwt.ExpiredSignatureError:
-        return "Signature is expired. Please log in again to refresh"
-    except Exception as e:
-        raise e 
+    payload = jwt.decode(
+        jwt_token,
+        app.config['SECRET_KEY'],
+        algorithms=["HS256"])
+    return payload['sub']
 
 
 def create_response(status: str, message: str)->dict:
