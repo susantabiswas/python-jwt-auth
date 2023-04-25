@@ -1,4 +1,5 @@
 from auth.app import db
+from auth.models.token_blocklist import BlockedToken
 from auth.models.user import User
 from tests.base import TestCaseBase
 
@@ -17,3 +18,13 @@ class UserModelTest(TestCaseBase):
         self.assertTrue(user.password, retrieved_user.password)
         self.assertTrue(user.name, retrieved_user.name)
 
+class BlockedTokenModelTest(TestCaseBase):
+    def test_user_model(self):
+        blocked_token = BlockedToken(token="sadasdsadasd")
+        db.session.add(blocked_token)
+        db.session.commit()
+
+        # retrieve the user
+        retrieved_blocked_token = BlockedToken.query.filter_by(token=blocked_token.token).first()
+
+        self.assertTrue(blocked_token.token, retrieved_blocked_token.token)
