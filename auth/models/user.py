@@ -1,8 +1,7 @@
 
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from auth.app import db
 
 class User(db.Model):
     """Represents the User model database schema. Information related

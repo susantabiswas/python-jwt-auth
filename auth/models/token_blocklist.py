@@ -1,8 +1,7 @@
 
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from auth.app import db
 
 class TokenBlocklist(db.Model):
     """Represents the schema to save the blocked token related information.
