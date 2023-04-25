@@ -20,4 +20,33 @@ class UserAPI(MethodView):
     pass
 
 
+# define the views for the APIs
+signup_api = SignupAPI.as_view('signup_api')
+login_api = LoginAPI.as_view('login_view')
+logout_api = LogoutAPI.as_view('logout_view')
+user_api = UserAPI.as_view('user_view')
+
+auth_blueprint.add_url_rule(
+    '/auth/signup',
+    view_func=signup_api,
+    methods=["GET"]
+)
+
+auth_blueprint.add_url_rule(
+    'auth/login',
+    view_func=login_api,
+    methods=["POST"]
+)
+
+auth_blueprint.add_url_rule(
+    'auth/logout',
+    view_func=logout_api,
+    methods=["POST"]
+)
+
+auth_blueprint.add_url_rule(
+    'auth/user',
+    view_func=user_api,
+    methods=["GET"]
+)
 
