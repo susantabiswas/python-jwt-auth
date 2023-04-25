@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, make_response, request
 from flask.views import MethodView
 from auth.app import db
-from auth.models.token_blocklist import TokenBlocklist
+from auth.models.token_blocklist import BlockedToken
 from auth.models.user import User
 from auth.api.auth_utils import *
 import bcrypt
@@ -19,7 +19,7 @@ class SignupAPI(MethodView):
             email = data['email']
             password = data['password']
             name = data['name']
-        except Exception:
+        except KeyError:
             response = create_response(status='failed',
                     message='Required fields are missing.')
             return make_response(jsonify(response)), 400
@@ -95,13 +95,36 @@ class LoginAPI(MethodView):
             return make_response(jsonify(response)), 500
 
 class LogoutAPI(MethodView):
-    pass
+    def post():
+        try:
+            # verify if the user is authorized by checking the JWT auth token
+            jwt_token = extract_jwt_token(request.headers)
+            is_valid, user_id, err_message, status_code = is_valid_jwt(jwt_token)
+
+            # invalid JWT token
+            if not is_valid:
+                response = create_response('failed', err_message)
+                return make_response(jsonify(response)), status_code
+
+            # JWT is valid, block the token
+            blocked_token = BlockedToken(token=jwt_token)
+            # Add the token to the blockedToken DB
+            db.session.add(blocked_token)
+            db.session.commit()
+
+            response = create_response('success', 'Logout Successful')
+            return make_response(jsonify(response)), 200
+
+        except Exception as e:
+            response = create_response('failed', 'Internal Error')
+            return make_response(jsonify(response)), 500
 
 class UserAPI(MethodView):
     def get(self):
         try:
             # verify if the user is authorized by checking the JWT auth token
-            is_valid, user_id, err_message, status_code = is_valid_jwt(request.headers)
+            jwt_token = extract_jwt_token(request.headers)
+            is_valid, user_id, err_message, status_code = is_valid_jwt(jwt_token)
 
             # invalid JWT token
             if not is_valid:
