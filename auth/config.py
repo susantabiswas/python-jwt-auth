@@ -19,20 +19,21 @@ class BaseConfig:
     SECRET_KEY = environ.get('SECRET_KEY')
     DEBUG = False
     TESTING = False
-    HOST="0.0.0.0"
-    FLASK_PORT=5000
-    BCRYPT_ROUNDS=4
-        
+    HOST = "0.0.0.0"
+    FLASK_PORT = 5000
+    BCRYPT_ROUNDS = 4
+    PROPAGATE_EXCEPTIONS = False
     # Database config
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevConfig(BaseConfig):
-    FLASK_ENV = "development"
+    ENV = "development"
     DEBUG = True
     TESTING = True
-
+    PROPAGATE_EXCEPTIONS = True
+    
     # MySQL
     MYSQL_HOST = "localhost"
     MYSQL_PORT = 3306
