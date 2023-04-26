@@ -1,12 +1,12 @@
 from datetime import datetime, timedelta
 import jwt
 from auth.app import app
-from flask import request
 from auth.app import db
 from auth.models.blocked_token import BlockedToken 
 import bcrypt
 
-def encode_jwt_token(user_id: str)->str:
+
+def encode_jwt_token(user_id: str) -> str:
     """Creates a JWT auth token. Uses a symmetric algorithm for
     signing the token.
 
@@ -33,12 +33,13 @@ def encode_jwt_token(user_id: str)->str:
         return jwt.encode(
             payload,
             app.config['SECRET_KEY'],
-            algorithm='HS256' # We will use a symmetric algorithm
+            algorithm='HS256'  # We will use a symmetric algorithm
         )
     except Exception as e:
         raise e
 
-def decode_jwt_token(jwt_token: str)->str:
+
+def decode_jwt_token(jwt_token: str) -> str:
     """Decodes a JWT token signature
 
     Args:
@@ -58,7 +59,8 @@ def decode_jwt_token(jwt_token: str)->str:
         algorithms=["HS256"])
     return payload
 
-def create_response(status: str, message: str)->dict:
+
+def create_response(status: str, message: str) -> dict:
     """Creates the standard response body
 
     Args:
@@ -73,7 +75,8 @@ def create_response(status: str, message: str)->dict:
         'message': message
     }
 
-def extract_jwt_token(req_headers)->str:
+
+def extract_jwt_token(req_headers) -> str:
     """Extracts the JWT auth token from Authorization header
     if present
 
@@ -88,7 +91,8 @@ def extract_jwt_token(req_headers)->str:
     jwt_token = auth_header.split(' ')[1] if auth_header else None
     return jwt_token
 
-def is_valid_jwt(jwt_token):
+
+def is_valid_jwt(jwt_token) -> bool:
     """Checks whether the header has a valid JWT token or not.
 
     Args:
@@ -104,7 +108,6 @@ def is_valid_jwt(jwt_token):
     # JWT token is not passed
     if jwt_token is None:
         return False, None, "Auth token missing", 401
-    
     try:
         jwt_payload = decode_jwt_token(jwt_token=jwt_token)
         # JWT token has not been tampered with. Next
@@ -114,7 +117,6 @@ def is_valid_jwt(jwt_token):
         if is_jwt_blocked(jwt_token=jwt_token):
             return False, None, "JWT token is blocked. Please login again", 401
         return True, jwt_payload['sub'], None, 200
-    
     except jwt.InvalidSignatureError as e:
         return False, None, "Token Signature doesn't match", 401
     except jwt.ExpiredSignatureError as e:
@@ -122,7 +124,8 @@ def is_valid_jwt(jwt_token):
     except jwt.InvalidTokenError as e:
         return False, None, "Invalid token signature", 401
 
-def is_jwt_blocked(jwt_token: str)->bool:
+
+def is_jwt_blocked(jwt_token: str) -> bool:
     """Checks whether a JWT token is blocked or not
 
     Args:
@@ -134,7 +137,8 @@ def is_jwt_blocked(jwt_token: str)->bool:
     blocked_token = BlockedToken.query.filter_by(token=jwt_token).first()
     return blocked_token is not None
 
-def block_jwt_token(jwt_token: str):
+
+def block_jwt_token(jwt_token: str) -> None:
     """Blocks a JWT token by inserting its record in
     BlockedToken list
 
@@ -145,8 +149,9 @@ def block_jwt_token(jwt_token: str):
     # Add the token to the blockedToken DB
     db.session.add(blocked_token)
     db.session.commit()
-    
-def encode_to_bytes(s: str)->bytes:
+
+
+def encode_to_bytes(s: str) -> bytes:
     """Encodes the string to bytes.
 
     Args:
@@ -156,6 +161,7 @@ def encode_to_bytes(s: str)->bytes:
         bytearray: string in bytes
     """
     return s.encode('utf-8')
+
 
 def generate_password_hash(password: str) -> bytes:
     """Generates a hash of password using a salt
