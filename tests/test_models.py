@@ -24,7 +24,7 @@ class BlockedTokenModelTest(TestCaseBase):
         db.session.add(blocked_token)
         db.session.commit()
 
-        # retrieve the user
+        # retrieve the blocked token
         retrieved_blocked_token = BlockedToken.query.filter_by(token=blocked_token.token).first()
 
         self.assertTrue(blocked_token.token, retrieved_blocked_token.token)
