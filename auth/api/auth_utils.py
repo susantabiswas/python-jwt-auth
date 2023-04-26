@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta
-import jwt
-from auth.app import app
-from auth.app import db
-from auth.models.blocked_token import BlockedToken
+
 import bcrypt
+import jwt
+from flask import make_response, jsonify, Response
+
+from auth.app import app, db
+from auth.models.blocked_token import BlockedToken
 
 
 def encode_jwt_token(user_id: str) -> str:
@@ -19,24 +21,21 @@ def encode_jwt_token(user_id: str) -> str:
     Returns:
         str: Encrypted token signature
     """
-    try:
-        curr_time = datetime.utcnow()
+    curr_time = datetime.utcnow()
 
-        payload = {
-            'sub': user_id,
-            'iat': curr_time,
-            'exp': curr_time + timedelta(
-                days=app.config['JWT_DAYS'],
-                minutes=app.config['JWT_MINUTES'],
-                seconds=app.config['JWT_SECONDS'])
-        }
-        return jwt.encode(
-            payload,
-            app.config['SECRET_KEY'],
-            algorithm='HS256'  # We will use a symmetric algorithm
-        )
-    except Exception as e:
-        raise e
+    payload = {
+        'sub': user_id,
+        'iat': curr_time,
+        'exp': curr_time + timedelta(
+            days=app.config['JWT_DAYS'],
+            minutes=app.config['JWT_MINUTES'],
+            seconds=app.config['JWT_SECONDS'])
+    }
+    return jwt.encode(
+        payload,
+        app.config['SECRET_KEY'],
+        algorithm='HS256'  # We will use a symmetric algorithm
+    )
 
 
 def decode_jwt_token(jwt_token: str) -> str:
@@ -74,6 +73,16 @@ def create_response(status: str, message: str) -> dict:
         'status': status,
         'message': message
     }
+
+
+def internal_error_response():
+    """Creates the response in case of an internal error
+
+    Returns:
+        _type_: _description_
+    """
+    response = create_response('failed', 'Internal Error')
+    return Response(response=response, status=500)
 
 
 def extract_jwt_token(req_headers) -> str:
