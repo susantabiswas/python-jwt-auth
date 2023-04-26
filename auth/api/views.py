@@ -29,6 +29,9 @@ class SignupAPI(MethodView):
             email = data['email']
             password = data['password']
             name = data['name']
+
+            if None in [email, password, name]:
+                raise KeyError
         except KeyError:
             response = create_response(
                             status='failed',
