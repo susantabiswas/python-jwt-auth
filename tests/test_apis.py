@@ -128,8 +128,46 @@ class TestAuthAPIs(TestCaseBase, TestAPIBase):
         self.assertEqual(len(body.keys()), 2)
 
     ####################### /auth/logout API tests #############################
+    def test_logout__invalid_jwt(self):
+        """Tests logout api flow when an invalid jwt is passed
+        """
+        # first create an user and get the jwt generated for it
+        pwd_hash = generate_password_hash('abc123')
+        user = User(email='user1@test.com', password=pwd_hash, name='user1')
+        db.session.add(user)
+        db.session.commit()
+
+        # generate jwt for it
+        jwt_token = encode_jwt_token(user_id=user.id)
+        response = self.logout_client(jwt_token=jwt_token+"incorrect")
+
+        body = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(body['status'], 'failed')
+        self.assertIsNotNone(body['message'])
+        self.assertEqual(len(body.keys()), 2)
 
 
+    def test_logout__valid_jwt(self):
+        """Tests logout api flow when a valid jwt is passed
+        """
+        # first create an user and get the jwt generated for it
+        pwd_hash = generate_password_hash('abc123')
+        user = User(email='user1@test.com', password=pwd_hash, name='user1')
+        db.session.add(user)
+        db.session.commit()
+
+        # generate jwt for it
+        jwt_token = encode_jwt_token(user_id=user.id)
+        response = self.logout_client(jwt_token=jwt_token)
+
+        body = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(body['status'], 'success')
+        self.assertEqual(body['message'], 'Logout Successful')
+        self.assertEqual(len(body.keys()), 2)
+    
     ####################### /auth/user API tests #############################
-
     
