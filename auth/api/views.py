@@ -1,14 +1,24 @@
+import traceback
+
+import bcrypt
 from flask import Blueprint, jsonify, make_response, request
 from flask.views import MethodView
+
+from auth.api.auth_utils import (block_jwt_token, create_response,
+                                 encode_jwt_token, encode_to_bytes,
+                                 extract_jwt_token, generate_password_hash,
+                                 is_valid_jwt)
 from auth.app import db
-from auth.models.blocked_token import BlockedToken
 from auth.models.user import User
-from auth.api.auth_utils import *
-import bcrypt
 
 auth_blueprint = Blueprint("auth", __name__)
 
+
 class SignupAPI(MethodView):
+    """API for user signup flow.
+    Registers a new user resource with the Auth system.
+    /auth/signup
+    """
     def post(self):
         # Get the post data
         data = request.get_json()
@@ -20,8 +30,9 @@ class SignupAPI(MethodView):
             password = data['password']
             name = data['name']
         except KeyError:
-            response = create_response(status='failed',
-                    message='Required fields are missing.')
+            response = create_response(
+                            status='failed',
+                            message='Required fields are missing.')
             return make_response(jsonify(response)), 400
 
         # Check if the user already exists
@@ -29,13 +40,15 @@ class SignupAPI(MethodView):
 
         # User already exists
         if user:
-            response = create_response(status='failed',
-                    message='User already exists.')
+            response = create_response(
+                            status='failed',
+                            message='User already exists.')
             return make_response(jsonify(response)), 202
         else:
             try:
-                # hash the password and then save it. This ensures that in the event
-                # the data is exposed, the actual passwords won't be exposed
+                # hash the password and then save it. This ensures that in the 
+                # event the data is exposed, the actual passwords won't be 
+                # exposed
                 pwd_hash = generate_password_hash(password)
 
                 # Insert the User record in database
@@ -44,16 +57,22 @@ class SignupAPI(MethodView):
                 db.session.commit()
 
                 # generate the JWT token and send it with the response
-                response = create_response(status='success',
+                response = create_response(
+                    status='success',
                     message='User signed up successful.')
                 response['jwt_token'] = encode_jwt_token(user.id)
 
                 return make_response(jsonify(response)), 201
-            except Exception as e:
+            except Exception:
+                traceback.print_exc()
                 response = create_response('failed', 'Internal Error')
                 return make_response(jsonify(response)), 500
 
+
 class LoginAPI(MethodView):
+    """API for user login flow. Checks if the credentials are
+    valid and then generates a JWT token for auth.
+    """
     def post(self):
         try:
             data = request.get_json()
@@ -67,7 +86,7 @@ class LoginAPI(MethodView):
             if not user:
                 return make_response(
                     jsonify(create_response('failed', 'User not found'))), 404
-            
+          
             pwd_match = bcrypt.checkpw(
                 password=encode_to_bytes(password),
                 hashed_password=encode_to_bytes(user.password))
@@ -78,7 +97,8 @@ class LoginAPI(MethodView):
                 return make_response(jsonify(response)), 401
 
             # User password is correct, generate a new JWT auth token
-            response = create_response(status='success',
+            response = create_response(
+                status='success',
                 message='User login successful.')
             response['jwt_token'] = encode_jwt_token(user.id)
 
@@ -87,16 +107,21 @@ class LoginAPI(MethodView):
         except KeyError:
             response = create_response('failed', 'Email / Password missing')
             return make_response(jsonify(response)), 401
-        except Exception as e:
+        except Exception:
+            traceback.print_exception()
             response = create_response('failed', 'Internal Error')
             return make_response(jsonify(response)), 500
 
+
 class LogoutAPI(MethodView):
+    """API for logout flow. The user is logged out of system
+    by invalidating the auth JWT token.
+    """
     def post(self):
         try:
             # verify if the user is authorized by checking the JWT auth token
             jwt_token = extract_jwt_token(request.headers)
-            is_valid, user_id, err_message, status_code = is_valid_jwt(jwt_token)
+            is_valid, _, err_message, status_code = is_valid_jwt(jwt_token)
 
             # invalid JWT token
             if not is_valid:
@@ -108,11 +133,15 @@ class LogoutAPI(MethodView):
             response = create_response('success', 'Logout Successful')
             return make_response(jsonify(response)), 200
 
-        except Exception as e:
+        except Exception:
+            traceback.print_exc()
             response = create_response('failed', 'Internal Error')
             return make_response(jsonify(response)), 500
 
+
 class UserAPI(MethodView):
+    """API for getting the details of user resource
+    """
     def get(self):
         try:
             # verify if the user is authorized by checking the JWT auth token
@@ -129,9 +158,13 @@ class UserAPI(MethodView):
 
             # User doesn't exist
             if not user:
-                return make_response(jsonify(create_response('failed', 'User not found'))), 404
+                return make_response(jsonify(create_response(
+                    'failed',
+                    'User not found'))), 404
 
-            response = create_response('success', 'Successfully fetched user details')
+            response = create_response(
+                'success', 
+                'Successfully fetched user details')
             response['details'] = {
                 'email': user.email,
                 'name': user.name,
@@ -140,7 +173,9 @@ class UserAPI(MethodView):
             }
             return make_response(jsonify(response)), 200
         except Exception:
-            return make_response(jsonify(create_response('failed', 'Internal Error'))), 500
+            traceback.print_exc()
+            return make_response(jsonify(
+                create_response('failed', 'Internal Error'))), 500
 
 
 # define the views for the APIs
