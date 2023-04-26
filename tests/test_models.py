@@ -2,7 +2,7 @@ from auth.app import db
 from auth.models.blocked_token import BlockedToken
 from auth.models.user import User
 from tests.base import TestCaseBase
-
+from datetime import datetime
 class UserModelTest(TestCaseBase):
     def test_user_model(self):
         user = User(email="user@test.com",
@@ -20,7 +20,7 @@ class UserModelTest(TestCaseBase):
 
 class BlockedTokenModelTest(TestCaseBase):
     def test_user_model(self):
-        blocked_token = BlockedToken(token="sadasdsadasd")
+        blocked_token = BlockedToken(token="sadasdsadasd", token_expiry=datetime.utcnow())
         db.session.add(blocked_token)
         db.session.commit()
 

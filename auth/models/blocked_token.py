@@ -1,7 +1,5 @@
-
 from datetime import datetime
 
-from auth.api.auth_utils import decode_jwt_token
 from auth.app import db
 
 
@@ -11,9 +9,9 @@ class BlockedToken(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     token = db.Column(db.String(500), unique=True, nullable=False)
     blocked_on = db.Column(db.DateTime, nullable=False)
-    expiry = db.Column(db.Datetime, nullable=False)
+    expiry = db.Column(db.DateTime, nullable=False)
     
-    def __init__(self, token):
+    def __init__(self, token, token_expiry):
         """Creates a new instance of TokenBlockList
 
         Args:
@@ -21,9 +19,7 @@ class BlockedToken(db.Model):
         """
         self.token = token
         self.blocked_on = datetime.utcnow()
-
-        payload = decode_jwt_token(token)
-        self.expiry = payload['exp']
+        self.expiry = token_expiry
 
     def __repr__(self):
         """String representation

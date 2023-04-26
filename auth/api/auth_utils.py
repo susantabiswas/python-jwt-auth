@@ -145,7 +145,10 @@ def block_jwt_token(jwt_token: str) -> None:
     Args:
         jwt_token (str): JWT token
     """
-    blocked_token = BlockedToken(token=jwt_token)
+    jwt_payload = decode_jwt_token(jwt_token=jwt_token)
+    blocked_token = BlockedToken(
+        token=jwt_token,
+        token_expiry=datetime.fromtimestamp(jwt_payload['exp']))
     # Add the token to the blockedToken DB
     db.session.add(blocked_token)
     db.session.commit()
