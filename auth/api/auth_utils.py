@@ -123,6 +123,26 @@ def is_valid_jwt(jwt_token):
         return False, None, "Invalid token signature", 401
 
 def is_jwt_blocked(jwt_token: str)->bool:
+    """Checks whether a JWT token is blocked or not
+
+    Args:
+        jwt_token (str): JWT auth token
+
+    Returns:
+        bool: Whether the token is blocked
+    """
     blocked_token = BlockedToken.query.filter_by(token=jwt_token).first()
     return blocked_token is not None
+
+def block_jwt_token(jwt_token: str):
+    """Blocks a JWT token by inserting its record in
+    BlockedToken list
+
+    Args:
+        jwt_token (str): JWT token
+    """
+    blocked_token = BlockedToken(token=jwt_token)
+    # Add the token to the blockedToken DB
+    db.session.add(blocked_token)
+    db.session.commit()
     
