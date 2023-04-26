@@ -55,7 +55,6 @@ class SignupAPI(MethodView):
                 response = create_response('failed', 'Internal Error')
                 return make_response(jsonify(response)), 500
 
-
 class LoginAPI(MethodView):
     def post(self):
         try:
@@ -107,11 +106,7 @@ class LogoutAPI(MethodView):
                 return make_response(jsonify(response)), status_code
 
             # JWT is valid, block the token
-            blocked_token = BlockedToken(token=jwt_token)
-            # Add the token to the blockedToken DB
-            db.session.add(blocked_token)
-            db.session.commit()
-
+            block_jwt_token(jwt_token=jwt_token)
             response = create_response('success', 'Logout Successful')
             return make_response(jsonify(response)), 200
 
