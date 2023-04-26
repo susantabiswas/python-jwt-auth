@@ -24,7 +24,10 @@ def encode_jwt_token(user_id: str)->str:
         payload = {
             'sub': user_id,
             'iat': curr_time,
-            'exp': curr_time +  timedelta(days=0, minutes=10, seconds=0)
+            'exp': curr_time +  timedelta(
+                days=app.config['JWT_DAYS'],
+                minutes=app.config['JWT_MINUTES'],
+                seconds=app.config['JWT_SECONDS'])
         }
         return jwt.encode(
             payload,

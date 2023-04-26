@@ -28,6 +28,10 @@ class BaseConfig:
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # JWT TTL
+    JWT_DAYS = 0
+    JWT_MINUTES = 0
+    JWT_SECONDS = 1
 
 class DevConfig(BaseConfig):
     ENV = "development"
