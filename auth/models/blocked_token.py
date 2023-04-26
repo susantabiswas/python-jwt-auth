@@ -27,4 +27,4 @@ class BlockedToken(db.Model):
         Returns:
             str: <id:, token: >
         """
-        return '<id: {}, token: {}>'.format(id, self.token)
+        return '<Id: {}, Token: {}>'.format(self.id, self.token)

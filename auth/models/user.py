@@ -18,4 +18,4 @@ class User(db.Model):
     admin = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
-        return "<Id:{}, Name: {}>".format(id, self.name)
+        return "<Id: {}, Name: {}>".format(self.id, self.name)
