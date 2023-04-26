@@ -49,13 +49,13 @@ def decode_jwt_token(jwt_token: str)->str:
         e: Any other exception
 
     Returns:
-        str: Unique user id
+        str: JWT payload
     """
     payload = jwt.decode(
         jwt_token,
         app.config['SECRET_KEY'],
         algorithms=["HS256"])
-    return payload['sub']
+    return payload
 
 def create_response(status: str, message: str)->dict:
     """Creates the standard response body
@@ -101,18 +101,18 @@ def is_valid_jwt(jwt_token):
         status_code(int) : Status code
     """
     # JWT token is not passed
-    if jwt_token is None or not isinstance(jwt_token, str):
-        return False, "Auth token missing", 401
+    if jwt_token is None:
+        return False, None, "Auth token missing", 401
     
     try:
-        user_id = decode_jwt_token(jwt_token=jwt_token)
+        jwt_payload = decode_jwt_token(jwt_token=jwt_token)
         # JWT token has not been tampered with. Next
         # check if the token is blocked or not
 
         # JWT token is blocked
         if is_jwt_blocked(jwt_token=jwt_token):
             return False, None, "JWT token is blocked. Please login again", 401
-        return True, user_id, None, 200
+        return True, jwt_payload['sub'], None, 200
     
     except jwt.InvalidSignatureError as e:
         return False, None, "Token Signature doesn't match", 401
