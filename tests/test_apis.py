@@ -55,18 +55,17 @@ class TestAuthAPIs(TestCaseBase, TestAPIBase):
         self.assertNotIn('jwt_token', body)
         self.assertEqual(len(body.keys()), 2)
 
-    def test_signup__user_invalid_data(self):
-        """Tests signup flow when one of the user field is not correct.
+    def test_signup__user_null_data(self):
+        """Tests signup flow when one of the user field is null.
         """
         response = self.signup_client(dict(email="user1@test.com", password="abc123", name=None))
 
         body = json.loads(response.data.decode())
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(body['status'], 'failed')
-        self.assertEqual(body['message'], 'Internal Error')
+        self.assertEqual(body['message'], 'One or more required fields are null')
         self.assertNotIn('jwt_token', body)
         self.assertEqual(len(body.keys()), 2)
-
 
     ####################### /auth/login API tests #############################
     def test_login__missing_user(self):
