@@ -1,8 +1,11 @@
-from auth.api.auth_utils import *
-from tests.base import TestCaseBase
-import jwt
 import time
+
+import jwt
+
+from auth.api.auth_utils import *
 from auth.app import app
+from tests.base import TestCaseBase
+
 
 class TestAuthUtils(TestCaseBase):
     user_id = "1"
@@ -167,3 +170,14 @@ class TestAuthUtils(TestCaseBase):
         """Tests whether a string is correctly converted to bytes
         """
         self.assertIsInstance(encode_to_bytes("abc"), bytes)
+
+
+    def test__internal_error(self):
+        """Tests internal error response creation
+        """
+        response = internal_error_response()
+        
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.response['status'], 'failed')
+        self.assertEqual(response.response['message'], 'Internal Error')
+        self.assertEqual(len(response.response.keys()), 2)
