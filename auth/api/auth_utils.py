@@ -57,7 +57,6 @@ def decode_jwt_token(jwt_token: str)->str:
         algorithms=["HS256"])
     return payload['sub']
 
-
 def create_response(status: str, message: str)->dict:
     """Creates the standard response body
 
@@ -102,8 +101,8 @@ def is_valid_jwt(jwt_token):
         status_code(int) : Status code
     """
     # JWT token is not passed
-    if jwt_token is None:
-        return False, "Authorization header missing", 401
+    if jwt_token is None or not isinstance(jwt_token, str):
+        return False, "Auth token missing", 401
     
     try:
         user_id = decode_jwt_token(jwt_token=jwt_token)
