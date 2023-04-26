@@ -162,3 +162,8 @@ class TestAuthUtils(TestCaseBase):
         self.assertIsNotNone(err_message)
         self.assertEqual(err_message, "Invalid token signature")
         self.assertEqual(status_code, 401)
+
+    def test_encode_to_bytes(self):
+        """Tests whether a string is correctly converted to bytes
+        """
+        self.assertIsInstance(encode_to_bytes("abc"), bytes)
