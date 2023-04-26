@@ -15,7 +15,7 @@ class TestTestingConfig(TestCase):
         self.assertTrue(app.config['TESTING'] == True)
 
         
-        self.assertTrue(app.config['JWT_SECONDS'] == 1)
+        self.assertTrue(app.config['JWT_SECONDS'] == 2)
         self.assertTrue(app.config['JWT_MINUTES'] == 0)
         self.assertTrue(app.config['JWT_DAYS'] == 0)
 
