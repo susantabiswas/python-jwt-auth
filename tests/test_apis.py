@@ -170,4 +170,62 @@ class TestAuthAPIs(TestCaseBase, TestAPIBase):
         self.assertEqual(len(body.keys()), 2)
     
     ####################### /auth/user API tests #############################
+    def test_user__invalid_jwt(self):
+        """Tests the user GET api flow when the jwt is invalid
+        """
+        # first create an user and get the jwt generated for it
+        pwd_hash = generate_password_hash('abc123')
+        user = User(email='user1@test.com', password=pwd_hash, name='user1')
+        db.session.add(user)
+        db.session.commit()
+
+        # generate jwt for it
+        jwt_token = encode_jwt_token(user_id=user.id)
+        response = self.user_get_client(jwt_token=jwt_token+"incorrect")
+
+        body = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(body['status'], 'failed')
+        self.assertIsNotNone(body['message'])
+        self.assertEqual(len(body.keys()), 2)
+
+
+    def test_user__user_not_found(self):
+        """Tests the user GET api flow when the user doesn't exists
+        """
+        # generate a valid jwt
+        jwt_token = encode_jwt_token(user_id="1")
+        response = self.user_get_client(jwt_token=jwt_token)
+
+        body = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(body['status'], 'failed')
+        self.assertEqual(body['message'], 'User not found')
+        self.assertEqual(len(body.keys()), 2)
+
+    def test_user__valid_jwt(self):
+        """Tests the user GET api flow when the jwt is valid
+        """
+        # first create an user and get the jwt generated for it
+        pwd_hash = generate_password_hash('abc123')
+        user = User(email='user1@test.com', password=pwd_hash, name='user1')
+        db.session.add(user)
+        db.session.commit()
+
+        # generate jwt for it
+        jwt_token = encode_jwt_token(user_id=user.id)
+        response = self.user_get_client(jwt_token=jwt_token)
+
+        body = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(body['status'], 'success')
+        self.assertEqual(body['message'], 'Successfully fetched user details')
+        self.assertEqual(len(body.keys()), 3)
+        self.assertIsInstance(body['details'], dict)
+        self.assertEqual(len(body['details'].keys()), 4)
+        self.assertEqual(sorted(['email', 'name', 'admin', 'registered_on']),
+            sorted(body['details'].keys()))
     
