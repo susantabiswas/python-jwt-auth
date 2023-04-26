@@ -14,6 +14,11 @@ class TestTestingConfig(TestCase):
         self.assertTrue(app.config['DEBUG'] == True)
         self.assertTrue(app.config['TESTING'] == True)
 
+        
+        self.assertTrue(app.config['JWT_SECONDS'] == 1)
+        self.assertTrue(app.config['JWT_MINUTES'] == 0)
+        self.assertTrue(app.config['JWT_DAYS'] == 0)
+
 class TestDevelopmentConfig(TestCase):
     def create_app(self):
         app.config.from_object("auth.config.DevConfig")
