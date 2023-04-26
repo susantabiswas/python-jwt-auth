@@ -40,6 +40,3 @@ class TestProductionConfig(TestCase):
         self.assertFalse(app.config['SQLALCHEMY_DATABASE_URI'] == "mysql://root:root@127.0.0.1:3306/flask_jwt_test")
         self.assertTrue(app.config['DEBUG'] == False)
         self.assertTrue(app.config['TESTING'] == False)
-
-if __name__ == "__main__":
-    unittest.main()
