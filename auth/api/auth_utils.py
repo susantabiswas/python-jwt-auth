@@ -145,3 +145,14 @@ def block_jwt_token(jwt_token: str):
     db.session.add(blocked_token)
     db.session.commit()
     
+def encode_to_bytes(s: str)->bytes:
+    """Encodes the string to bytes.
+
+    Args:
+        s (str): input string
+
+    Returns:
+        bytearray: string in bytes
+    """
+    return s.encode('utf-8')
+
