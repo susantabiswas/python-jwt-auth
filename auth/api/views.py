@@ -7,7 +7,7 @@ from flask.views import MethodView
 from auth.api.auth_utils import (block_jwt_token, create_response,
                                  encode_jwt_token, encode_to_bytes,
                                  extract_jwt_token, generate_password_hash,
-                                 is_valid_jwt)
+                                 is_valid_jwt, internal_error_response)
 from auth.app import db
 from auth.models.user import User
 
@@ -31,11 +31,16 @@ class SignupAPI(MethodView):
             name = data['name']
 
             if None in [email, password, name]:
-                raise KeyError
+                raise ValueError
         except KeyError:
             response = create_response(
                             status='failed',
                             message='Required fields are missing.')
+            return make_response(jsonify(response)), 400
+        except ValueError:
+            response = create_response(
+                            status='failed',
+                            message='One or more required fields are null')
             return make_response(jsonify(response)), 400
 
         # Check if the user already exists
@@ -68,8 +73,7 @@ class SignupAPI(MethodView):
                 return make_response(jsonify(response)), 201
             except Exception:
                 traceback.print_exc()
-                response = create_response('failed', 'Internal Error')
-                return make_response(jsonify(response)), 500
+                return internal_error_response()
 
 
 class LoginAPI(MethodView):
@@ -111,9 +115,8 @@ class LoginAPI(MethodView):
             response = create_response('failed', 'Email / Password missing')
             return make_response(jsonify(response)), 401
         except Exception:
-            traceback.print_exception()
-            response = create_response('failed', 'Internal Error')
-            return make_response(jsonify(response)), 500
+            traceback.print_exc()
+            return internal_error_response()
 
 
 class LogoutAPI(MethodView):
@@ -138,8 +141,7 @@ class LogoutAPI(MethodView):
 
         except Exception:
             traceback.print_exc()
-            response = create_response('failed', 'Internal Error')
-            return make_response(jsonify(response)), 500
+            return internal_error_response()
 
 
 class UserAPI(MethodView):
@@ -177,8 +179,7 @@ class UserAPI(MethodView):
             return make_response(jsonify(response)), 200
         except Exception:
             traceback.print_exc()
-            return make_response(jsonify(
-                create_response('failed', 'Internal Error'))), 500
+            return internal_error_response()
 
 
 # define the views for the APIs
