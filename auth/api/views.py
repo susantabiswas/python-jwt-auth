@@ -131,12 +131,12 @@ class UserAPI(MethodView):
             if not user:
                 return make_response(jsonify(create_response('failed', 'User not found'))), 404
 
-            response = create_response('success', '')
+            response = create_response('success', 'Successfully fetched user details')
             response['details'] = {
                 'email': user.email,
                 'name': user.name,
                 'admin': user.admin,
-                'registration_on': user.registration_timestamp
+                'registered_on': user.registration_timestamp
             }
             return make_response(jsonify(response)), 200
         except Exception:
