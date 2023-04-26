@@ -36,9 +36,7 @@ class SignupAPI(MethodView):
             try:
                 # hash the password and then save it. This ensures that in the event
                 # the data is exposed, the actual passwords won't be exposed
-                pwd_salt = bcrypt.gensalt(app.config['BCRYPT_ROUNDS'])
-                # the password needs to be converted to byte-array to get the hash
-                pwd_hash = bcrypt.hashpw(password.encode('utf-8'), pwd_salt)
+                pwd_hash = generate_password_hash(password)
 
                 # Insert the User record in database
                 user = User(email=email, password=pwd_hash, name=name)
@@ -69,10 +67,10 @@ class LoginAPI(MethodView):
             if not user:
                 return make_response(
                     jsonify(create_response('failed', 'User not found'))), 404
-          
+            
             pwd_match = bcrypt.checkpw(
-                password=password.encode('utf-8'),
-                hashed_password=user.password.encode('utf-8'))
+                password=encode_to_bytes(password),
+                hashed_password=encode_to_bytes(user.password))
             
             # password is not correct
             if not pwd_match:

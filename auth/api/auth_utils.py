@@ -4,6 +4,7 @@ from auth.app import app
 from flask import request
 from auth.app import db
 from auth.models.blocked_token import BlockedToken 
+import bcrypt
 
 def encode_jwt_token(user_id: str)->str:
     """Creates a JWT auth token. Uses a symmetric algorithm for
@@ -156,3 +157,17 @@ def encode_to_bytes(s: str)->bytes:
     """
     return s.encode('utf-8')
 
+def generate_password_hash(password: str) -> bytes:
+    """Generates a hash of password using a salt
+
+    Args:
+        password (str): password
+
+    Returns:
+        bytes: Hashed password
+    """
+    pwd_salt = bcrypt.gensalt(app.config['BCRYPT_ROUNDS'])
+    # the password needs to be converted to byte-array to get the hash
+    pwd_hash = bcrypt.hashpw(encode_to_bytes(password), pwd_salt)
+
+    return pwd_hash
