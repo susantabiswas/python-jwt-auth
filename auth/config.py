@@ -30,8 +30,8 @@ class BaseConfig:
 
     # JWT TTL
     JWT_DAYS = 0
-    JWT_MINUTES = 0
-    JWT_SECONDS = 1
+    JWT_MINUTES = 1
+    JWT_SECONDS = 0
 
 class DevConfig(BaseConfig):
     ENV = "development"
@@ -49,6 +49,11 @@ class TestConfig(BaseConfig):
     # Database
     SQLALCHEMY_DATABASE_URI = environ.get('TEST_DATABASE_URI')
 
+    # JWT TTL
+    JWT_DAYS = 0
+    JWT_MINUTES = 0
+    JWT_SECONDS = 1
+    
 class ProdConfig(BaseConfig):
     ENV = "production"
     DEBUG = False
