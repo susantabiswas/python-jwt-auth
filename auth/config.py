@@ -1,18 +1,22 @@
 from dotenv import load_dotenv
 from os import environ, path
 
+
 def export_environment_variables(env_filename=".env") -> None:
     """Exports the environment variables from the .env file.
 
     Args:
-        env_file_name (str, optional): local environment file containing the variables. Defaults to ".env".
+        env_file_name (str, optional): local environment file
+        containing the variables. Defaults to ".env".
     """
     # Load the environment vars from the local env file
     BASE_DIR = path.abspath(path.dirname(__file__))
     load_dotenv(path.join(BASE_DIR, env_filename))
-    
+
+
 # Load the environment vars from the local env file
 export_environment_variables()
+
 
 class BaseConfig:
     # Flask config
@@ -33,11 +37,13 @@ class BaseConfig:
     JWT_MINUTES = 1
     JWT_SECONDS = 0
 
+
 class DevConfig(BaseConfig):
     ENV = "development"
     DEBUG = True
     TESTING = True
     PROPAGATE_EXCEPTIONS = True
+
 
 class TestConfig(BaseConfig):
     ENV = "testing"
@@ -54,7 +60,8 @@ class TestConfig(BaseConfig):
     JWT_MINUTES = 0
     JWT_SECONDS = 2
 
+
 class ProdConfig(BaseConfig):
     ENV = "production"
     DEBUG = False
-
+    
