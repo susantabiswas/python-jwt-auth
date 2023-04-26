@@ -52,8 +52,8 @@ class TestConfig(BaseConfig):
     # JWT TTL
     JWT_DAYS = 0
     JWT_MINUTES = 0
-    JWT_SECONDS = 1
-    
+    JWT_SECONDS = 2
+
 class ProdConfig(BaseConfig):
     ENV = "production"
     DEBUG = False
