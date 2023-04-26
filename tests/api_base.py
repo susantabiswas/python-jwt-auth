@@ -7,7 +7,7 @@ class TestAPIBase(TestCase):
     Has methods for making client calls to the different auth APIs.
     
     """
-    def user_get_client(self, jwt_token):
+    def user_get_client(self, jwt_token: str):
         return self.client.get(
             '/auth/user',
             headers=dict(
@@ -15,7 +15,7 @@ class TestAPIBase(TestCase):
             )
         )
 
-    def logout_client(self, email, jwt_token):
+    def logout_client(self, jwt_token: str):
         return self.client.post(
             '/auth/logout',
             headers=dict(
@@ -23,23 +23,16 @@ class TestAPIBase(TestCase):
             )
         )
 
-    def signup_client(self, email, password, name):
+    def signup_client(self, body_dict: dict):
         return self.client.post(
             '/auth/signup',
-            data=json.dumps(dict(
-                email=email,
-                password=password,
-                name=name
-            )),
+            data=json.dumps(body_dict),
             content_type='application/json'
         )
 
-    def login_client(self, email, password):
+    def login_client(self, body_dict: dict):
         return self.client.post(
             '/auth/login',
-            data=json.dumps(dict(
-                email=email,
-                password=password
-            )),
+            data=json.dumps(body_dict),
             content_type='application/json'
         )
