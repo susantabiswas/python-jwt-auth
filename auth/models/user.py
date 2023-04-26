@@ -1,7 +1,8 @@
 
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
+
 from auth.app import db
+
 
 class User(db.Model):
     """Represents the User model database schema. Information related
@@ -11,8 +12,9 @@ class User(db.Model):
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    registration_timestamp = db.Column(db.DateTime(timezone=False), nullable=False,
-        default=datetime.utcnow())
+    registration_timestamp = db.Column(
+        db.DateTime(timezone=False),
+        nullable=False, default=datetime.utcnow())
     admin = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):

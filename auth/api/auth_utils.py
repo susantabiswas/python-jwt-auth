@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import jwt
 from auth.app import app
 from auth.app import db
-from auth.models.blocked_token import BlockedToken 
+from auth.models.blocked_token import BlockedToken
 import bcrypt
 
 
