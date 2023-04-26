@@ -28,7 +28,12 @@ class TestAuthAPIs(TestCaseBase, TestAPIBase):
     def test_signup__user_already_signedup(self):
         """Tests signup flow when user is already registered.
         """
-        _ = self.signup_client(dict(email="user1@test.com", password="abc123", name="user1"))
+        # create a new user
+        pwd_hash = generate_password_hash('abc123')
+        user = User(email='user1@test.com', password=pwd_hash, name='user1')
+        db.session.add(user)
+        db.session.commit()
+        # try to signup again with the registered email
         response = self.signup_client(dict(email="user1@test.com", password="abc123", name="user1"))
 
         body = json.loads(response.data.decode())
@@ -41,11 +46,7 @@ class TestAuthAPIs(TestCaseBase, TestAPIBase):
     def test_signup__required_fields_missing(self):
         """Tests signup flow when user's required fields are missing'.
         """
-        response = self.client.post(
-            '/auth/signup',
-            data=json.dumps(dict(email="user1@test.com", password="abc123")),
-            content_type='application/json'
-        )
+        response = self.signup_client(dict(email="user1@test.com", password="abc123"))
 
         body = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 400)
