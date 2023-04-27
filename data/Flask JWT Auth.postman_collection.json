@@ -1,0 +1,142 @@
+{
+	"info": {
+		"_postman_id": "44038b92-40c1-4282-9ebf-bf3df12a327c",
+		"name": "Flask JWT Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"user7@gmail.com\",\r\n    \"password\":\"abc123\",\r\n    \"name\":\"user7\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{flask_port}}/auth/signup",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{flask_port}}",
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}:{{flask_port}}/auth/user",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{flask_port}}",
+					"path": [
+						"auth",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"user3@gmail.com\",\r\n    \"password\":\"abc123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{flask_port}}/auth/login",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{flask_port}}",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host}}:{{flask_port}}/auth/logout",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{flask_port}}",
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}:{{flask_port}}/auth/ping",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{flask_port}}",
+					"path": [
+						"auth",
+						"ping"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
