@@ -1,6 +1,8 @@
 # Python Authentication System
 
 [![CodeQL](https://github.com/susantabiswas/python-jwt-template/actions/workflows/codeql.yml/badge.svg)](https://github.com/susantabiswas/python-jwt-template/actions/workflows/codeql.yml)
+[![CodeFactor Quality](https://www.codefactor.io/repository/github/susantabiswas/python-jwt-auth/badge)](https://www.codefactor.io/repository/github/susantabiswas/python-jwt-auth)
+<a href="https://codeclimate.com/github/susantabiswas/python-jwt-auth/maintainability"><img src="https://api.codeclimate.com/v1/badges/34c62e02d8316679f59b/maintainability" /></a>
 
 Authentication is one of the most important things one would want in a service.
 This is an authentication system using JWT.
@@ -160,7 +162,7 @@ Here is a postman [API Collection](data/Flask%20JWT%20Auth.postman_collection.js
 ```
 
 # Architecture
-![Architecture](data/Python%20JWT%20Auth.drawio.svg)
+![Architecture](data/Python%20JWT%20Auth.drawio.png)
 
 ### Salient points
 >
