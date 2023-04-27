@@ -1,5 +1,6 @@
 # Python Authentication System
 
+[![Build](https://github.com/susantabiswas/python-jwt-auth/actions/workflows/build.yml/badge.svg)](https://github.com/susantabiswas/python-jwt-auth/actions/workflows/build.yml)
 [![CodeQL](https://github.com/susantabiswas/python-jwt-template/actions/workflows/codeql.yml/badge.svg)](https://github.com/susantabiswas/python-jwt-template/actions/workflows/codeql.yml)
 [![CodeFactor Quality](https://www.codefactor.io/repository/github/susantabiswas/python-jwt-auth/badge)](https://www.codefactor.io/repository/github/susantabiswas/python-jwt-auth)
 <a href="https://codeclimate.com/github/susantabiswas/python-jwt-auth/maintainability"><img src="https://api.codeclimate.com/v1/badges/34c62e02d8316679f59b/maintainability" /></a>
