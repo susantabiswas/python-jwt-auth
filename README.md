@@ -130,7 +130,7 @@ flask db downgrade
 ```
 
 ## Postman API collection
-Here is a postman [API Collection](https://github.com/susantabiswas/python-jwt-template/blob/main/data/Flask%20JWT%20Auth.postman_collection.json) that can be used via importing it.
+Here is a postman [API Collection](data/Flask%20JWT%20Auth.postman_collection.json) that can be used via importing it.
 
 
 # Project Structure
@@ -160,6 +160,7 @@ Here is a postman [API Collection](https://github.com/susantabiswas/python-jwt-t
 ```
 
 # Architecture
+![Architecture](data/Python%20JWT%20Auth.drawio.svg)
 
 ### Salient points
 >
