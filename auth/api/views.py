@@ -13,6 +13,13 @@ from auth.models.user import User
 
 auth_blueprint = Blueprint("auth", __name__)
 
+class PingAPI(MethodView):
+    """GET API that can be used for server health check and pings.
+    """
+    def get(self):
+        return make_response(jsonify(create_response(
+            status='success',
+            message='APIs are up and running'))), 200
 
 class SignupAPI(MethodView):
     """API for user signup flow.
@@ -183,10 +190,17 @@ class UserAPI(MethodView):
 
 
 # define the views for the APIs
+ping_api = PingAPI.as_view('ping_api')
 signup_api = SignupAPI.as_view('signup_api')
 login_api = LoginAPI.as_view('login_view')
 logout_api = LogoutAPI.as_view('logout_view')
 user_api = UserAPI.as_view('user_view')
+
+auth_blueprint.add_url_rule(
+    '/auth/ping',
+    view_func=ping_api,
+    methods=["GET"]
+)
 
 auth_blueprint.add_url_rule(
     '/auth/signup',

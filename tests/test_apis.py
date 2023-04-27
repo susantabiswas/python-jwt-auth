@@ -11,6 +11,19 @@ from auth.api.auth_utils import *
 class TestAuthAPIs(TestCaseBase, TestAPIBase):
     """Test cases for auth APIs
     """
+    ####################### /auth/ping API tests #############################
+    def test_ping(self):
+        """Tests the server ping API
+        """
+        response = self.client.get(
+            '/auth/ping'
+        )
+
+        body = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(body['status'], 'success')
+        self.assertEqual(body['message'], 'APIs are up and running')
+
 
     ####################### /auth/signup API tests #############################
     def test_signup__valid_case(self):
