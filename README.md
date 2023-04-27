@@ -163,7 +163,7 @@ Here is a postman [API Collection](data/Flask%20JWT%20Auth.postman_collection.js
 ```
 
 # Architecture
-![Architecture](data/Python%20JWT%20Auth.drawio.png)
+![Architecture](data/arch.svg)
 
 ### Salient points
 >
