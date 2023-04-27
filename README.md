@@ -220,22 +220,13 @@ User resource related operations
 # References
 There are lot of things used in the project and the following links might be helpful for further reading.
 
-https://susantabiswas.com/posts/Practical-JSON-Web-Tokens-(JWT)-guide
-
-https://pypi.org/project/PyJWT/
-
-https://pythonhosted.org/Flask-Testing/
-
-https://stackoverflow.com/questions/56622797/using-flask-migrate-for-models-in-multiple-files
-
-https://flask-migrate.readthedocs.io/en/latest/
-
-https://zetcode.com/python/bcrypt/
-
-https://realpython.com/token-based-authentication-with-flask/
-
-https://blog.miguelgrinberg.com/post/how-to-add-flask-migrate-to-an-existing-project
-
-https://www.digitalocean.com/community/tutorials/how-to-use-flask-sqlalchemy-to-interact-with-databases-in-a-flask-application
-
-https://hackersandslackers.com/configure-flask-applications/
+- https://susantabiswas.com/posts/Practical-JSON-Web-Tokens-(JWT)-guide
+- https://pypi.org/project/PyJWT/
+- https://pythonhosted.org/Flask-Testing/
+- https://stackoverflow.com/questions/56622797/using-flask-migrate-for-models-in-multiple-files
+- https://flask-migrate.readthedocs.io/en/latest/
+- https://zetcode.com/python/bcrypt/
+- https://realpython.com/token-based-authentication-with-flask/
+- https://blog.miguelgrinberg.com/post/how-to-add-flask-migrate-to-an-existing-project
+- https://www.digitalocean.com/community/tutorials/how-to-use-flask-sqlalchemy-to-interact-with-databases-in-a-flask-application
+- https://hackersandslackers.com/configure-flask-applications/
